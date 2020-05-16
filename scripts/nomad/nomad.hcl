@@ -4,13 +4,16 @@ log_level = "DEBUG"
 # Setup data dir
 data_dir = "/opt/nomad"
 
-bind_addr = "server_ip" # edit to private network
+addresses {
+  http = "server_public_ip"
+  rpc  = "server_private_ip"
+  serf = "server_private_ip"
+}
 
 advertise {
-  # Edit to the private IP address.
-  http = "server_ip:4646"
-  rpc  = "server_ip:4647"
-  serf = "server_ip:4648" # non-default ports may be specified
+  http = "server_private_ip"
+  rpc  = "server_private_ip"
+  serf = "server_private_ip"
 }
 
 # Enable the server

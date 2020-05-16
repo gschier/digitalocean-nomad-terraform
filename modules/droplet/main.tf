@@ -23,6 +23,13 @@ resource "digitalocean_droplet" "server" {
     agent = true
   }
 
+  # Create directories
+  provisioner "remote-exec" {
+    inline = [
+      "mkdir -p /etc/nomad.d /opt/nomad",
+    ]
+  }
+
   # Install dependencies file
   provisioner "file" {
     source      = "${path.root}/scripts/core/install_dependencies.sh"
@@ -59,21 +66,14 @@ resource "digitalocean_droplet" "server" {
   provisioner "remote-exec" {
     inline = [
       "chmod +x /tmp/install_nomad.sh",
-      "sed -i 's/server_ip/${self.ipv4_address_private}/g' /etc/nomad.d/nomad.hcl",
+      "sed -i 's/server_public_ip/${self.ipv4_address}/g' /etc/nomad.d/nomad.hcl",
+      "sed -i 's/server_private_ip/${self.ipv4_address_private}/g' /etc/nomad.d/nomad.hcl",
       "sed -i 's/cluster_size/${var.cluster_size}/g' /etc/nomad.d/nomad.hcl",
       "/tmp/install_nomad.sh",
     ]
   }
-
-//  # Join Nomad servers (Fix for nomad not auto starting #1945)
-//  provisioner "remote-exec" {
-//    inline = [
-//      "export NOMAD_ADDR=http://${self.ipv4_address_private}:4646",
-//      "nomad server join ${digitalocean_droplet.server.0.ipv4_address_private}",
-//    ]
-//  }
 }
 
 output "server_ids" {
-  value = [digitalocean_droplet.server.*.id]
+  value = digitalocean_droplet.server.*.id
 }
