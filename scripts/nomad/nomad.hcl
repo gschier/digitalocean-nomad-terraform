@@ -4,17 +4,7 @@ log_level = "DEBUG"
 # Setup data dir
 data_dir = "/opt/nomad"
 
-addresses {
-  http = "server_public_ip"
-  rpc  = "server_private_ip"
-  serf = "server_private_ip"
-}
-
-advertise {
-  http = "server_private_ip"
-  rpc  = "server_private_ip"
-  serf = "server_private_ip"
-}
+bind_addr = "server_private_ip"
 
 # Enable the server
 server {

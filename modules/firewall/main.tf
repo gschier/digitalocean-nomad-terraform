@@ -4,25 +4,25 @@ variable "server_ids" {
 }
 
 resource "digitalocean_firewall" "web" {
-  name        = "firewall-1"
+  name        = "nomad-firewall"
   droplet_ids = var.server_ids
 
   inbound_rule {
-    protocol   = "tcp"
-    port_range = "22"
+    protocol         = "tcp"
+    port_range       = "22"
     source_addresses = ["0.0.0.0/0", "::/0"]
   }
 
   inbound_rule {
-    protocol   = "tcp"
-    port_range = "8500"
-    source_addresses = ["0.0.0.0/0", "::/0"]
+    protocol    = "tcp"
+    port_range  = "all"
+    source_tags = ["nomad-box"]
   }
 
   inbound_rule {
-    protocol   = "tcp"
-    port_range = "4646"
-    source_addresses = ["0.0.0.0/0", "::/0"]
+    protocol    = "udp"
+    port_range  = "all"
+    source_tags = ["nomad-box"]
   }
 
   outbound_rule {
