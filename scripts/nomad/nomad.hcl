@@ -1,17 +1,14 @@
-# Increase log verbosity
 log_level = "DEBUG"
-
-# Setup data dir
 data_dir = "/opt/nomad"
-
-bind_addr = "server_private_ip"
+bind_addr = "__SERVER_IP__"
+datacenter = "__DATACENTER__"
 
 # Enable the server
 server {
   enabled = true
 
   # Self-elect, should be 3 or 5 for production
-  bootstrap_expect = cluster_size
+  bootstrap_expect = __CLUSTER_SIZE__
 }
 
 # Enable a client on the same node
