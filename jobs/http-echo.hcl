@@ -26,6 +26,7 @@ job "http-echo" {
           mbits = 10
           port "web" {}
         }
+
       }
 
       service {

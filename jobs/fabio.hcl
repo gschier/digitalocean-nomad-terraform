@@ -2,6 +2,11 @@ job "fabio" {
   datacenters = [ "dc1" ]
   type = "system"
 
+  update {
+    stagger = "5s"
+    max_parallel = 1
+  }
+
   group "fabio" {
     count = 1
 

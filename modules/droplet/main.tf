@@ -102,6 +102,31 @@ resource "digitalocean_droplet" "server" {
       "nomad server join ${digitalocean_droplet.server.0.ipv4_address_private}",
     ]
   }
+
+  # ~~~~~~~~~~~~~~~ #
+  # Copy Nomad Jobs #
+  # ~~~~~~~~~~~~~~~ #
+
+  provisioner "file" {
+    source      = "${path.root}/jobs/fabio.hcl"
+    destination = "/opt/nomad/fabio.hcl"
+  }
+  provisioner "file" {
+    source      = "${path.root}/jobs/http-echo.hcl"
+    destination = "/opt/nomad/http-echo.hcl"
+  }
+}
+
+resource "null_resource" "fabio_job" {
+  provisioner "local-exec" {
+    command = "ssh root@${digitalocean_droplet.server.0.ipv4_address} nomad job run -address=http://${digitalocean_droplet.server.0.ipv4_address_private}:4646 /opt/nomad/fabio.hcl"
+  }
+}
+
+resource "null_resource" "http_echo_job" {
+  provisioner "local-exec" {
+    command = "ssh root@${digitalocean_droplet.server.0.ipv4_address} nomad job run -address=http://${digitalocean_droplet.server.0.ipv4_address_private}:4646 /opt/nomad/http-echo.hcl"
+  }
 }
 
 resource "null_resource" "server_script" {
