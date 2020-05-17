@@ -98,8 +98,12 @@ resource "digitalocean_droplet" "server" {
   }
   provisioner "remote-exec" {
     inline = [
-      "export NOMAD_ADDR=http://${self.ipv4_address_private}:4646",
-      "nomad server join ${digitalocean_droplet.server.0.ipv4_address_private}",
+      "nomad server join -address=http://${self.ipv4_address_private}:4646 ${digitalocean_droplet.server.0.ipv4_address_private}",
+    ]
+  }
+  provisioner "remote-exec" {
+    inline = [
+      "echo 'export NOMAD_ADDR=http://${self.ipv4_address_private}:4646' | tee -a ~/.bash_profile",
     ]
   }
 
@@ -117,21 +121,14 @@ resource "digitalocean_droplet" "server" {
   }
 }
 
-resource "null_resource" "nomad_jobs" {
-  provisioner "local-exec" {
-    command = "ssh root@${digitalocean_droplet.server.0.ipv4_address} nomad job run -detach -address=http://${digitalocean_droplet.server.0.ipv4_address_private}:4646 /opt/nomad/fabio.hcl"
-  }
-  provisioner "local-exec" {
-    command = "ssh root@${digitalocean_droplet.server.0.ipv4_address} nomad job run -detach -address=http://${digitalocean_droplet.server.0.ipv4_address_private}:4646 /opt/nomad/http-echo.hcl"
-  }
-}
-
-resource "null_resource" "gen_scripts" {
-  provisioner "local-exec" {
-    command = "mkdir -p gen && echo 'ssh -N -L 4646:${digitalocean_droplet.server.0.ipv4_address_private}:4646 -L 8500:localhost:8500 root@${digitalocean_droplet.server.0.ipv4_address}' > ./gen/tunnel.sh"
-  }
-}
-
 output "server_ids" {
   value = digitalocean_droplet.server.*.id
+}
+
+output "nomad_ip" {
+  value = digitalocean_droplet.server.0.ipv4_address
+}
+
+output "nomad_ip_private" {
+  value = digitalocean_droplet.server.0.ipv4_address_private
 }
