@@ -19,7 +19,7 @@ job "fabio" {
       }
 
       resources {
-        memory = 50
+        memory = 100
       }
 
       artifact {

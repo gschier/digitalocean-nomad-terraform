@@ -18,9 +18,10 @@ echo "Creating ./gen/tunnel.sh"
 cat > ./gen/tunnel.sh <<EOF
 #!/bin/bash
 echo "Start SSH tunnel"
-ssh -N \
+ssh -N \\
   -L 4646:${var.nomad_ip_private}:4646 \\
   -L 9998:${var.nomad_ip_private}:9998 \\
+  -L 9998:${var.nomad_ip_private}:9999 \\
   -L 8500:localhost:8500 \\
   root@167.71.113.246
 EOF

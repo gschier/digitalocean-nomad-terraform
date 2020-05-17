@@ -112,12 +112,8 @@ resource "digitalocean_droplet" "server" {
   # ~~~~~~~~~~~~~~~ #
 
   provisioner "file" {
-    source      = "${path.root}/jobs/fabio.hcl"
-    destination = "/opt/nomad/fabio.hcl"
-  }
-  provisioner "file" {
-    source      = "${path.root}/jobs/http-echo.hcl"
-    destination = "/opt/nomad/http-echo.hcl"
+    source      = "${path.root}/jobs/"
+    destination = "/opt/nomad"
   }
 }
 

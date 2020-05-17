@@ -15,4 +15,7 @@ resource "null_resource" "jobs" {
   provisioner "local-exec" {
     command = "ssh root@${var.nomad_ip} nomad job run -address=${var.nomad_addr} /opt/nomad/http-echo.hcl"
   }
+  provisioner "local-exec" {
+    command = "ssh root@${var.nomad_ip} nomad job run -address=${var.nomad_addr} /opt/nomad/prometheus.hcl"
+  }
 }
