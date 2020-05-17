@@ -27,6 +27,10 @@ job "fabio" {
         destination = "local/fabio"
         mode        = "file"
       }
+
+      service {
+        tags = [ "urlprefix-/fabio" ]
+      }
     }
   }
 }

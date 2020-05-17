@@ -98,12 +98,8 @@ resource "digitalocean_droplet" "server" {
   }
   provisioner "remote-exec" {
     inline = [
-      "nomad server join -address=http://${self.ipv4_address_private}:4646 ${digitalocean_droplet.server.0.ipv4_address_private}",
-    ]
-  }
-  provisioner "remote-exec" {
-    inline = [
-      "echo 'export NOMAD_ADDR=http://${self.ipv4_address_private}:4646' | tee -a ~/.bash_profile",
+      "export NOMAD_ADDR=http://${digitalocean_droplet.server.0.ipv4_address_private}:4646",
+      "nomad server join ${digitalocean_droplet.server.0.ipv4_address_private}",
     ]
   }
 
@@ -114,6 +110,28 @@ resource "digitalocean_droplet" "server" {
   provisioner "file" {
     source      = "${path.root}/jobs/"
     destination = "/opt/nomad"
+  }
+}
+
+resource "null_resource" "jobs" {
+  depends_on = [
+    digitalocean_droplet.server,
+  ]
+
+  connection {
+    type  = "ssh"
+    user  = "root"
+    host  = digitalocean_droplet.server.0.ipv4_address
+    agent = true
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "export NOMAD_ADDR=http://${digitalocean_droplet.server.0.ipv4_address_private}:4646",
+      "nomad job run /opt/nomad/fabio.hcl",
+      "nomad job run /opt/nomad/http-echo.hcl",
+      "nomad job run /opt/nomad/prometheus.hcl",
+    ]
   }
 }
 
