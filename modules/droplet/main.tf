@@ -57,7 +57,7 @@ resource "digitalocean_droplet" "server" {
     inline = [
       "chmod +x /tmp/install_consul.sh",
       "sed -i 's/__SERVER_IP__/${self.ipv4_address_private}/g' /etc/consul.d/consul.hcl",
-      "sed -i 's/__CLUSTER_SIZE__/${var.cluster_size}/g' /etc/nomad.d/nomad.hcl",
+      "sed -i 's/__CLUSTER_SIZE__/${var.cluster_size}/g' /etc/consul.d/consul.hcl",
       "sed -i 's/__DATACENTER__/${var.datacenter}/g' /etc/consul.d/consul.hcl",
       "/tmp/install_consul.sh",
     ]
@@ -101,6 +101,12 @@ resource "digitalocean_droplet" "server" {
       "export NOMAD_ADDR=http://${self.ipv4_address_private}:4646",
       "nomad server join ${digitalocean_droplet.server.0.ipv4_address_private}",
     ]
+  }
+}
+
+resource "null_resource" "server_script" {
+  provisioner "local-exec" {
+    command = "echo 'ssh -N -L 4646:${digitalocean_droplet.server.0.ipv4_address_private}:4646 -L 8500:localhost:8500 root@${digitalocean_droplet.server.0.ipv4_address}' > tunnel.sh"
   }
 }
 
