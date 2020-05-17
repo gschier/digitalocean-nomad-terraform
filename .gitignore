@@ -37,3 +37,6 @@ terraform.rc
 # IntelliJ
 .idea
 .DS_Store
+
+/gen/*
+!/gen/.gitkeep

@@ -8,6 +8,7 @@ StartLimitBurst=3
 [Service]
 ExecReload=/bin/kill -HUP $MAINPID
 ExecStart=/usr/bin/nomad agent -config /etc/nomad.d/
+ExecStartPost=/bin/sleep 5
 KillMode=process
 KillSignal=SIGINT
 LimitNOFILE=infinity
