@@ -106,7 +106,7 @@ resource "digitalocean_droplet" "server" {
 
 resource "null_resource" "server_script" {
   provisioner "local-exec" {
-    command = "echo 'ssh -N -L 4646:${digitalocean_droplet.server.0.ipv4_address_private}:4646 -L 8500:localhost:8500 root@${digitalocean_droplet.server.0.ipv4_address}' > tunnel.sh"
+    command = "echo 'ssh -N -L 4646:${digitalocean_droplet.server.0.ipv4_address_private}:4646 -L 8500:localhost:8500 root@${digitalocean_droplet.server.0.ipv4_address}' > ./gen/tunnel.sh"
   }
 }
 
