@@ -117,19 +117,16 @@ resource "digitalocean_droplet" "server" {
   }
 }
 
-resource "null_resource" "fabio_job" {
+resource "null_resource" "nomad_jobs" {
   provisioner "local-exec" {
     command = "ssh root@${digitalocean_droplet.server.0.ipv4_address} nomad job run -address=http://${digitalocean_droplet.server.0.ipv4_address_private}:4646 /opt/nomad/fabio.hcl"
   }
-}
-
-resource "null_resource" "http_echo_job" {
   provisioner "local-exec" {
     command = "ssh root@${digitalocean_droplet.server.0.ipv4_address} nomad job run -address=http://${digitalocean_droplet.server.0.ipv4_address_private}:4646 /opt/nomad/http-echo.hcl"
   }
 }
 
-resource "null_resource" "server_script" {
+resource "null_resource" "gen_scripts" {
   provisioner "local-exec" {
     command = "echo 'ssh -N -L 4646:${digitalocean_droplet.server.0.ipv4_address_private}:4646 -L 8500:localhost:8500 root@${digitalocean_droplet.server.0.ipv4_address}' > ./gen/tunnel.sh"
   }
