@@ -38,4 +38,4 @@ terraform.rc
 .idea
 .DS_Store
 
-/gen
+gen
