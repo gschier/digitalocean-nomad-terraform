@@ -1,25 +1,22 @@
-variable "ssh_fingerprint" {
-  description = "SSH fingerprint to enable"
-}
-
-variable "cluster_size" {
-  description = "Number of nodes to create"
-}
-
-variable "datacenter" {
-  description = "Name of datacenter"
-}
+variable "ssh_fingerprint" {}
+variable "cluster_size" {}
+variable "datacenter" {}
+variable "region" {}
+variable "vpc_id" {}
+variable "resource_tag" {}
 
 # Create a new Web Droplet
 resource "digitalocean_droplet" "server" {
   count              = var.cluster_size
-  name               = "nomad-box-${count.index + 1}"
+  name               = "nomad-cluster-${count.index + 1}"
   image              = "ubuntu-18-04-x64"
-  region             = "sfo2"
+  region             = var.region
   size               = "1gb"
   private_networking = true
+  backups            = true
   ssh_keys           = [var.ssh_fingerprint]
-  tags               = ["nomad-box"]
+  tags               = [var.resource_tag]
+  vpc_uuid           = var.vpc_id
 
   connection {
     type    = "ssh"
@@ -130,8 +127,38 @@ resource "null_resource" "jobs" {
       "export NOMAD_ADDR=http://${digitalocean_droplet.server.0.ipv4_address_private}:4646",
       "nomad job run /opt/nomad/fabio.hcl",
       "nomad job run /opt/nomad/http-echo.hcl",
-      "nomad job run /opt/nomad/prometheus.hcl",
+      //      "nomad job run /opt/nomad/prometheus.hcl",
     ]
+  }
+}
+
+resource "null_resource" "scripts" {
+  provisioner "local-exec" {
+    command = <<CMD
+rm -rf gen
+mkdir -p gen
+echo "Creating ./gen/tunnel.sh"
+
+cat > ./gen/tunnel.sh <<EOF
+#!/bin/bash
+echo "Start SSH tunnel to ${digitalocean_droplet.server.0.ipv4_address}"
+ssh -N \\
+  -L 4646:${digitalocean_droplet.server.0.ipv4_address_private}:4646 \\
+  -L 9998:${digitalocean_droplet.server.0.ipv4_address_private}:9998 \\
+  -L 9999:${digitalocean_droplet.server.0.ipv4_address_private}:9999 \\
+  -L 8500:localhost:8500 \\
+  root@${digitalocean_droplet.server.0.ipv4_address}
+EOF
+
+cat > ./gen/ssh.sh <<EOF
+#!/bin/bash
+echo "Connecting to ${digitalocean_droplet.server.0.ipv4_address}..."
+ssh root@${digitalocean_droplet.server.0.ipv4_address}
+EOF
+
+chmod +x gen/*
+
+CMD
   }
 }
 

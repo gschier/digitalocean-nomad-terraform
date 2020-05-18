@@ -14,7 +14,11 @@ You will be prompted for a DigitalOcean token, SSH fingerprint, and custer size 
 
 This currently installs the following:
 
-- [x] DigitalOcean firewall to enable internal cluster traffic and external SSH
+- [x] DigitalOcean droplets
+- [x] DigitalOcean firewall
+- [x] DigitalOcean load balancer
+- [x] DigitalOcean VPC
+- [x] DigitalOcean DNS record
 - [x] [Nomad](https://www.nomadproject.io) configured as both client/server
 - [x] [Consul](https://www.consul.io) for client/server usage
 - [ ] [Vault](https://www.vaultproject.io) for secret sharing

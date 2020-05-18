@@ -1,12 +1,17 @@
-job "http-echo" {
+job "app.http-echo" {
   datacenters = [ "dc1" ]
 
   group "echo" {
     count = 10
 
     update {
-      canary       = 1
-      max_parallel = 5
+      canary           = 1
+      max_parallel     = 5
+      auto_promote     = true
+      auto_revert      = true
+      min_healthy_time = "5s"
+      stagger          = "10s"
+      health_check     = "checks"
     }
 
     task "server" {
@@ -32,7 +37,7 @@ job "http-echo" {
         name = "http-echo"
         port = "web"
 
-        tags = [ "urlprefix-/http-echo" ]
+        tags = [ "urlprefix-/" ]
 
         check {
           type     = "http"

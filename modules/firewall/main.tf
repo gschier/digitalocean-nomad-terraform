@@ -1,7 +1,6 @@
-variable "server_ids" {
-  type        = list(string)
-  description = "list of servers"
-}
+variable "server_ids" {}
+variable "loadbalancer_id" {}
+variable "resource_tag" {}
 
 resource "digitalocean_firewall" "web" {
   name        = "nomad-firewall"
@@ -14,15 +13,17 @@ resource "digitalocean_firewall" "web" {
   }
 
   inbound_rule {
-    protocol    = "tcp"
-    port_range  = "all"
-    source_tags = ["nomad-box"]
+    protocol                  = "tcp"
+    port_range                = "all"
+    source_tags               = [var.resource_tag]
+    source_load_balancer_uids = [var.loadbalancer_id]
   }
 
   inbound_rule {
-    protocol    = "udp"
-    port_range  = "all"
-    source_tags = ["nomad-box"]
+    protocol                  = "udp"
+    port_range                = "all"
+    source_tags               = [var.resource_tag]
+    source_load_balancer_uids = [var.loadbalancer_id]
   }
 
   outbound_rule {
