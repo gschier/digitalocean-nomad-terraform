@@ -6,6 +6,10 @@ wget -q -O consul.zip https://releases.hashicorp.com/consul/1.7.3/consul_1.7.3_l
 unzip -o consul.zip
 mv consul /usr/local/bin/
 
+# Setup autocomplete
+consul -autocomplete-install
+complete -C /usr/local/bin/consul consul
+
 # Start consul as a service
 systemctl enable consul.service
 systemctl start consul.service

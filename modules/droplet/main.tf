@@ -66,6 +66,33 @@ resource "digitalocean_droplet" "server" {
   }
 
   # ~~~~~~~~~~~~~ #
+  # Install Vault #
+  # ~~~~~~~~~~~~~ #
+
+  provisioner "remote-exec" {
+    inline = ["mkdir -p /etc/vault.d /opt/vault"]
+  }
+  provisioner "file" {
+    source      = "${path.root}/scripts/vault/install_vault.sh"
+    destination = "/tmp/install_vault.sh"
+  }
+  provisioner "file" {
+    source      = "${path.root}/scripts/vault/vault.hcl"
+    destination = "/etc/vault.d/vault.hcl"
+  }
+  provisioner "file" {
+    source      = "${path.root}/scripts/vault/vault.service"
+    destination = "/etc/systemd/system/vault.service"
+  }
+  provisioner "remote-exec" {
+    inline = [
+      "chmod +x /tmp/install_vault.sh",
+      "sed -i 's/__SERVER_IP__/${self.ipv4_address_private}/g' /etc/vault.d/vault.hcl",
+      "/tmp/install_vault.sh",
+    ]
+  }
+
+  # ~~~~~~~~~~~~~ #
   # Install Nomad #
   # ~~~~~~~~~~~~~ #
 
@@ -146,6 +173,7 @@ ssh -N \\
   -L 4646:${digitalocean_droplet.server.0.ipv4_address_private}:4646 \\
   -L 9998:${digitalocean_droplet.server.0.ipv4_address_private}:9998 \\
   -L 9999:${digitalocean_droplet.server.0.ipv4_address_private}:9999 \\
+  -L 8200:${digitalocean_droplet.server.0.ipv4_address_private}:8200 \\
   -L 8500:localhost:8500 \\
   root@${digitalocean_droplet.server.0.ipv4_address}
 EOF
