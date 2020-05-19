@@ -21,7 +21,7 @@ This currently installs the following:
 - [x] DigitalOcean DNS record
 - [x] [Nomad](https://www.nomadproject.io) configured as both client/server
 - [x] [Consul](https://www.consul.io) for client/server usage
-- [ ] [Vault](https://www.vaultproject.io) for secret sharing
+- [x] [Vault](https://www.vaultproject.io) for secret sharing
 - [x] Example web service and [Fabio](https://fabiolb.net) Proxy for load balancing
 
 ## Useful Things to Remember
