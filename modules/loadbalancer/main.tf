@@ -53,9 +53,9 @@ resource "digitalocean_loadbalancer" "loadbalancer" {
 
   # Simply check if the node is up
   healthcheck {
-    port                     = 9999
+    port                     = 9998
     protocol                 = "http"
-    path                     = "/http-echo"
+    path                     = "/"
     healthy_threshold        = 2
     unhealthy_threshold      = 2
     check_interval_seconds   = 10

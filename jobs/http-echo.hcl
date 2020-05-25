@@ -2,7 +2,7 @@ job "app.http-echo" {
   datacenters = [ "dc1" ]
 
   group "echo" {
-    count = 10
+    count = 1
 
     update {
       canary           = 1
@@ -37,7 +37,7 @@ job "app.http-echo" {
         name = "http-echo"
         port = "web"
 
-        tags = [ "urlprefix-/" ]
+        tags = [ "urlprefix-schier.dev/" ]
 
         check {
           type     = "http"
