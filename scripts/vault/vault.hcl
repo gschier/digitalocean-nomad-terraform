@@ -1,8 +1,8 @@
 ui = true
-api_addr = "http://__SERVER_IP__:8200"
+api_addr = "http://__SERVER_IP_PRV__:8200"
 
 listener "tcp" {
-  address     = "__SERVER_IP__:8200"
+  address     = "__SERVER_IP_PRV__:8200"
   tls_disable = 1
 }
 

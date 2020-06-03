@@ -53,7 +53,7 @@ resource "digitalocean_droplet" "server" {
   provisioner "remote-exec" {
     inline = [
       "chmod +x /tmp/install_consul.sh",
-      "sed -i 's/__SERVER_IP__/${self.ipv4_address_private}/g' /etc/consul.d/consul.hcl",
+      "sed -i 's/__SERVER_IP_PRV__/${self.ipv4_address_private}/g' /etc/consul.d/consul.hcl",
       "sed -i 's/__CLUSTER_SIZE__/${var.cluster_size}/g' /etc/consul.d/consul.hcl",
       "sed -i 's/__DATACENTER__/${var.datacenter}/g' /etc/consul.d/consul.hcl",
       "/tmp/install_consul.sh",
@@ -87,7 +87,7 @@ resource "digitalocean_droplet" "server" {
   provisioner "remote-exec" {
     inline = [
       "chmod +x /tmp/install_vault.sh",
-      "sed -i 's/__SERVER_IP__/${self.ipv4_address_private}/g' /etc/vault.d/vault.hcl",
+      "sed -i 's/__SERVER_IP_PRV__/${self.ipv4_address_private}/g' /etc/vault.d/vault.hcl",
       "/tmp/install_vault.sh",
     ]
   }
@@ -114,7 +114,8 @@ resource "digitalocean_droplet" "server" {
   provisioner "remote-exec" {
     inline = [
       "chmod +x /tmp/install_nomad.sh",
-      "sed -i 's/__SERVER_IP__/${self.ipv4_address_private}/g' /etc/nomad.d/nomad.hcl",
+      "sed -i 's/__SERVER_IP__/${self.ipv4_address}/g' /etc/nomad.d/nomad.hcl",
+      "sed -i 's/__SERVER_IP_PRV__/${self.ipv4_address_private}/g' /etc/nomad.d/nomad.hcl",
       "sed -i 's/__CLUSTER_SIZE__/${var.cluster_size}/g' /etc/nomad.d/nomad.hcl",
       "sed -i 's/__DATACENTER__/${var.datacenter}/g' /etc/nomad.d/nomad.hcl",
       "/tmp/install_nomad.sh",
@@ -153,8 +154,7 @@ resource "null_resource" "jobs" {
     inline = [
       "export NOMAD_ADDR=http://${digitalocean_droplet.server.0.ipv4_address_private}:4646",
       "nomad job run /opt/nomad/fabio.hcl",
-      "nomad job run /opt/nomad/http-echo.hcl",
-      //      "nomad job run /opt/nomad/prometheus.hcl",
+      "nomad job run /opt/nomad/ui-proxy.hcl",
     ]
   }
 }

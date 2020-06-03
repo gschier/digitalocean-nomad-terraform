@@ -1,9 +1,11 @@
-job "fabio" {
-  datacenters = [ "dc1" ]
+job "sys.fabio" {
+  datacenters = [
+    "dc1"]
   type = "system"
 
   update {
-    stagger = "5s"
+    canary = 1
+    stagger = "1s"
     max_parallel = 1
   }
 
@@ -15,7 +17,9 @@ job "fabio" {
 
       config {
         command = "fabio"
-        args    = [ "-proxy.strategy=rr" ]
+        args = [
+          "-proxy.strategy=rr",
+        ]
       }
 
       resources {
@@ -23,13 +27,9 @@ job "fabio" {
       }
 
       artifact {
-        source      = "https://github.com/fabiolb/fabio/releases/download/v1.5.13/fabio-1.5.13-go1.13.4-linux_amd64"
+        source = "https://github.com/fabiolb/fabio/releases/download/v1.5.13/fabio-1.5.13-go1.13.4-linux_amd64"
         destination = "local/fabio"
-        mode        = "file"
-      }
-
-      service {
-        tags = [ "urlprefix-/fabio" ]
+        mode = "file"
       }
     }
   }

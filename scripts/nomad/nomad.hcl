@@ -1,6 +1,6 @@
 log_level  = "DEBUG"
 data_dir   = "/opt/nomad"
-bind_addr  = "__SERVER_IP__"
+bind_addr  = "__SERVER_IP_PRV__"
 datacenter = "__DATACENTER__"
 
 # Enable the server
@@ -14,6 +14,16 @@ server {
 # Enable a client on the same node
 client {
   enabled = true
+}
+
+acl {
+  enabled = true
+}
+
+vault {
+  enabled = true
+  address = "http://__SERVER_IP_PRV__:8200"
+  token = "PLEASE_FILL_TOKEN"
 }
 
 telemetry {
