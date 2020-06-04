@@ -3,7 +3,8 @@
 **NOTE: This is an experiment, please only use for reference**
 
 ```bash
-# How to use
+# Bootstrap the cluster
+
 terraform init
 terraform apply
 
