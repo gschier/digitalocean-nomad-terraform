@@ -6,6 +6,12 @@
 # How to use
 terraform init
 terraform apply
+
+# A ./gen/ssh.sh and ./gen/tunnel.ssh will be generated with the 
+# droplet IPs populated to help get started
+
+./gen/ssh.sh      # To SHH into primary node
+./gen/tunnel.ssh  # To start SSH tunnel for Nomad/Vault/Consul/Fabio UIs
 ```
 
 You will be prompted for a DigitalOcean token, SSH fingerprint, and custer size (1, 3 or 5).
@@ -27,6 +33,6 @@ This currently installs the following:
 ## Useful Things to Remember
 
 - Consul UI runs on `:8500`
+- Vault UI runs on `:8200`
 - Nomad UI runs on `:4242`
 - Fabio UI runs on `:9998` and proxies on `:9999`
-- SSH tunnel `ssh -N -L "4646:${DROPLET_PRIVATE_IP}:4646" "root@${DROPLET_PUBLIC_IP}"`
