@@ -154,7 +154,9 @@ resource "null_resource" "jobs" {
     inline = [
       "export NOMAD_ADDR=http://${digitalocean_droplet.server.0.ipv4_address_private}:4646",
       "nomad job run /opt/nomad/fabio.hcl",
-      "nomad job run /opt/nomad/ui-proxy.hcl",
+      "nomad job run /opt/nomad/fabio-proxy.hcl",
+      "nomad job run /opt/nomad/nomad-proxy.hcl",
+      "nomad job run /opt/nomad/vault-proxy.hcl",
     ]
   }
 }

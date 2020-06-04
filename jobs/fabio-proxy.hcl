@@ -1,6 +1,8 @@
-job "sys.uiproxy" {
+job "proxy.fabio" {
   datacenters = [
-    "dc1"]
+    "dc1"
+  ]
+
   type = "service"
 
   update {
@@ -8,18 +10,14 @@ job "sys.uiproxy" {
     max_parallel = 1
   }
 
-  group "uiproxy" {
+  group "fabioproxy" {
     count = 1
 
-    task "uiproxy" {
+    task "fabioproxy" {
       driver = "docker"
 
       config {
         image = "nginx"
-
-        port_map {
-          http = 8080
-        }
 
         volumes = [
           "custom/default.conf:/etc/nginx/conf.d/default.conf"
@@ -29,10 +27,10 @@ job "sys.uiproxy" {
       template {
         data = <<EOH
           server {
-            listen 8080;
-            server_name nginx.service.nomadui;
+            listen {{ env "NOMAD_PORT_nginx" }};
+            server_name nginx.service.uiproxy;
             location / {
-              proxy_pass http://10.120.16.2:4646;
+              proxy_pass http://10.120.16.2:9998;
             }
           }
         EOH
@@ -43,21 +41,20 @@ job "sys.uiproxy" {
         memory = 128
 
         network {
-          port "http" {
-            static = 8080
-          }
+          port "nginx" {}
         }
       }
 
       service {
-        name = "nginx"
+        name = "fabioproxy"
+        port = "nginx"
+
         tags = [
           "nginx",
           "web",
-          "urlprefix-admin.schier.dev/"
+          "urlprefix-fabio.schier.dev/",
         ]
 
-        port = "http"
         check {
           type = "tcp"
           interval = "10s"
