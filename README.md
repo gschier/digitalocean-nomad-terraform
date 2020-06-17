@@ -3,9 +3,16 @@
 **NOTE: This is an experiment, please only use for reference**
 
 ```bash
-# How to use
+# Bootstrap the cluster
+
 terraform init
 terraform apply
+
+# A ./gen/ssh.sh and ./gen/tunnel.ssh will be generated with the 
+# droplet IPs populated to help get started
+
+./gen/ssh.sh      # To SHH into primary node
+./gen/tunnel.ssh  # To start SSH tunnel for Nomad/Vault/Consul/Fabio UIs
 ```
 
 You will be prompted for a DigitalOcean token, SSH fingerprint, and custer size (1, 3 or 5).
@@ -23,13 +30,6 @@ This currently installs the following:
 - [x] [Consul](https://www.consul.io) for client/server usage
 - [x] [Vault](https://www.vaultproject.io) for secret sharing
 - [x] Example web service and [Fabio](https://fabiolb.net) Proxy for load balancing
-
-## Useful Things to Remember
-
-- Consul UI runs on `:8500`
-- Nomad UI runs on `:4242`
-- Fabio UI runs on `:9998` and proxies on `:9999`
-- SSH tunnel `ssh -N -L "4646:${DROPLET_PRIVATE_IP}:4646" "root@${DROPLET_PUBLIC_IP}"`
 
 ## Boostrapping Cluster
 
@@ -50,4 +50,3 @@ To upgrade the cluster, the following steps must be taken for each node:
 4. Apply single resource using Terraform
 5. Set Vault token in Nomad config file
 6. Unseal Vault on new node
-
