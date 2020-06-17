@@ -11,7 +11,7 @@ resource "digitalocean_droplet" "server" {
   name               = "nomad-cluster-${count.index + 1}"
   image              = "ubuntu-18-04-x64"
   region             = var.region
-  size               = "1gb"
+  size               = "s-1vcpu-1gb"
   private_networking = true
   backups            = true
   ssh_keys           = [var.ssh_fingerprint]
